@@ -8,7 +8,17 @@ public class Node {
     public Node(int data) {
         this.data = data;
     }
-    public Node(){}
+
+    public Node() {
+    }
+
+    /**
+     * 判断是否有子树
+     * @return 判断结果
+     */
+    public boolean hasChild() {
+        return !(leftChild == null && rigthChild == null);
+    }
 
     public int getData() {
         return data;

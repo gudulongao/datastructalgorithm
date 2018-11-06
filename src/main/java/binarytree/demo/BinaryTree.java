@@ -2,6 +2,9 @@ package binarytree.demo;
 
 import binarytree.demo.bean.Node;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 /**
  * 二叉树
  */
@@ -13,28 +16,29 @@ public class BinaryTree {
 
     /**
      * 插入数据
+     *
      * @param data 数据
      * @return 插入结果
      */
-    public boolean insert(int data){
+    public boolean insert(int data) {
         Node node = new Node(data);
-        if (root == null){
+        if (root == null) {
             root = node;
             return true;
         }
         Node curr = root;
         Node parent;
-        while (curr != null){
+        while (curr != null) {
             parent = curr;
-            if(curr.getData()>data){
+            if (curr.getData() > data) {
                 curr = curr.getLeftChild();
-                if(curr == null){
+                if (curr == null) {
                     parent.setLeftChild(node);
                     return true;
                 }
-            }else{
+            } else {
                 curr = curr.getRigthChild();
-                if(curr == null){
+                if (curr == null) {
                     parent.setRigthChild(node);
                 }
             }
@@ -45,37 +49,41 @@ public class BinaryTree {
     /**
      * 中序遍历
      */
-    public void middleIterator(){
-        if(root == null){
+    public void middleIterator() {
+        if (root == null) {
             System.out.println("empty tree");
             return;
         }
+        System.out.print("BinaryTree.middleIterator ");
         middleIterator(root);
     }
-    private void middleIterator(Node node){
-        if (node == null){
+
+    private void middleIterator(Node node) {
+        if (node == null) {
             return;
         }
         middleIterator(node.getLeftChild());
-        System.out.print(node.getData()+" ");
+        System.out.print(node.getData() + " ");
         middleIterator(node.getRigthChild());
     }
 
     /**
      * 先序遍历
      */
-    public void preIterator(){
-        if(root == null){
+    public void preIterator() {
+        if (root == null) {
             System.out.println("empty tree");
             return;
         }
+        System.out.print("BinaryTree.preIterator ");
         preIterator(root);
     }
-    private void preIterator(Node node){
-        if (node == null){
+
+    private void preIterator(Node node) {
+        if (node == null) {
             return;
         }
-        System.out.print(node.getData()+" ");
+        System.out.print(node.getData() + " ");
         preIterator(node.getLeftChild());
         preIterator(node.getRigthChild());
     }
@@ -83,23 +91,95 @@ public class BinaryTree {
     /**
      * 后序遍历
      */
-    public void postIterator(){
-        if(root == null){
+    public void postIterator() {
+        if (root == null) {
             System.out.println("empty tree");
             return;
         }
+        System.out.print("BinaryTree.postIterator ");
         postIterator(root);
     }
-    private void postIterator(Node node){
-        if (node == null){
+
+    private void postIterator(Node node) {
+        if (node == null) {
             return;
         }
         postIterator(node.getLeftChild());
         postIterator(node.getRigthChild());
-        System.out.print(node.getData()+" ");
+        System.out.print(node.getData() + " ");
     }
 
-    public static void main(String[] args) {
+    /**
+     * 层序遍历
+     */
+    public void levelIterator() {
+        if (root == null) {
+            System.out.println("empty tree");
+            return;
+        }
+        System.out.print("BinaryTree.levelIterator ");
+        Queue<Node> queue = new LinkedList<Node>();
+        System.out.print(root.getData()+" ");
+        queue.add(root);
+        levelIterator(queue);
+    }
+    private void levelIterator(Queue<Node> queue) {
+        if (queue.isEmpty()) {
+            return;
+        }
+        Node node = queue.poll();
+        Node leftChild = node.getLeftChild();
+        if (leftChild != null) {
+            System.out.print(leftChild.getData() + " ");
+            queue.offer(leftChild);
+        }
+        Node rigthChild = node.getRigthChild();
+        if (rigthChild != null) {
+            System.out.print(rigthChild.getData() + " ");
+            queue.offer(rigthChild);
+        }
+        levelIterator(queue);
+    }
+
+    /**
+     * 查找最小值
+     *
+     * @return 最小值
+     * @throws Exception
+     */
+    public int findMin() throws Exception {
+        if (root == null) {
+            throw new Exception("empty tree!");
+        }
+        Node curr = root;
+        Node parent = null;
+        while (curr != null) {
+            parent = curr;
+            curr = curr.getLeftChild();
+        }
+        return parent.getData();
+    }
+
+    /**
+     * 查找最大值
+     *
+     * @return 最大值
+     * @throws Exception
+     */
+    public int findMax() throws Exception {
+        if (root == null) {
+            throw new Exception("empty tree!");
+        }
+        Node curr = root;
+        Node parent = null;
+        while (curr != null) {
+            parent = curr;
+            curr = curr.getRigthChild();
+        }
+        return parent.getData();
+    }
+
+    public static void main(String[] args) throws Exception {
         BinaryTree tree = new BinaryTree();
         tree.insert(7);
         tree.insert(2);
@@ -112,5 +192,11 @@ public class BinaryTree {
         tree.preIterator();
         System.out.println();
         tree.postIterator();
+        System.out.println();
+        tree.levelIterator();
+        System.out.println();
+        System.out.println("max value: " + tree.findMax());
+        System.out.println("min value: " + tree.findMin());
     }
+
 }
