@@ -185,7 +185,7 @@ public class BinaryTree {
         } else if (ChildType.LEFT == targetChildType || ChildType.RIGHT == targetChildType) {
             return deleteSingleChild(parent, target, targetType, targetChildType);
         } else {
-            return deleteBothChild(parent, target);
+            return deleteBothChild(parent, target, targetType);
         }
     }
 
@@ -236,11 +236,12 @@ public class BinaryTree {
     /**
      * 删除节点既有左子树又有右子树
      *
-     * @param parent 父节点
-     * @param target 目标节点
+     * @param parent     父节点
+     * @param target     目标节点
+     * @param targetType 目标子树类型
      * @return 结果
      */
-    private boolean deleteBothChild(Node parent, Node target) {
+    private boolean deleteBothChild(Node parent, Node target, ChildType targetType) throws Exception {
         Node targetLChild = target.getLeftChild();
         Node targetRCild = target.getRigthChild();
         //如果目标节点的右子节点无左子树，即目标的右子节点为后继节点
@@ -254,24 +255,30 @@ public class BinaryTree {
         //如果目标即诶单的右子节点有左子树，则需要遍历找到后继节点（目标节点右子树中的最小值--右子树的最左节点）
         else {
             Node curr = targetRCild;
-            Node replaceNode = null, repalceParent = null, replaceChild;
+            Node replaceNode = null, repalceParent = target, replaceChild;
             while (curr != null) {
-                repalceParent = curr;
                 replaceChild = curr.getLeftChild();
                 if (replaceChild == null) {
                     replaceNode = curr;
                     break;
                 }
+                repalceParent = curr;
                 curr = curr.getLeftChild();
             }
             //将后继节点的右子树作为后继节点父节点的左子树
             repalceParent.setLeftChild(replaceNode.getRigthChild());
-            //将后继节点父节点作为后继节点的右子树
-            replaceNode.setRigthChild(repalceParent);
-            //将目标即诶单的左子树作为后继节点的左子树
+            //将目标节点的右子树作为后继节点的右子树
+            replaceNode.setRigthChild(targetRCild);
+            //将目标节点的左子树作为后继节点的左子树
             replaceNode.setLeftChild(targetLChild);
-            //将后继节点作为父节点的右子树
-            parent.setRigthChild(replaceNode);
+            //将后继节替换目标节点父节点的子树
+            if (ChildType.LEFT == targetType) {
+                parent.setLeftChild(replaceNode);
+            } else if (ChildType.RIGHT == targetType) {
+                parent.setRigthChild(replaceNode);
+            } else {
+                throw new Exception("wrong target child type!");
+            }
             return true;
         }
     }
@@ -322,6 +329,12 @@ public class BinaryTree {
         tree.insert(1);
         tree.insert(10);
         tree.insert(-1);
+        tree.insert(5);
+        tree.insert(6);
+        tree.insert(3);
+        tree.insert(8);
+        tree.insert(9);
+        tree.insert(-10);
         tree.middleIterator();
         System.out.println();
         tree.preIterator();
@@ -332,11 +345,13 @@ public class BinaryTree {
         System.out.println();
         System.out.println("max value: " + tree.findMax());
         System.out.println("min value: " + tree.findMin());
-        tree.delete(10);
+        tree.delete(2);
+        System.out.print("delete 2: ");
         tree.levelIterator();
-        System.out.println();
-        tree.delete(1);
-        tree.levelIterator();
+//        System.out.println();
+//        tree.delete(6);
+//        System.out.print("delete 6:");
+//        tree.levelIterator();
     }
 
 }
