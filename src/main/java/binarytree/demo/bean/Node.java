@@ -38,6 +38,22 @@ public class Node {
         }
     }
 
+    /**
+     * 子节点个数
+     *
+     * @return
+     */
+    public int directChildSize() {
+        ChildType type = getChildType();
+        if (ChildType.NONE == type) {
+            return 0;
+        } else if (ChildType.BOTH == type) {
+            return 2;
+        } else {
+            return 1;
+        }
+    }
+
     public int getData() {
         return data;
     }

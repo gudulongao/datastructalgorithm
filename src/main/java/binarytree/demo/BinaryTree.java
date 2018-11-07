@@ -347,6 +347,46 @@ public class BinaryTree {
         return -1;
     }
 
+    public int getWith() {
+        if (root == null) {
+            return -1;
+        }
+        List<Node> list = new ArrayList<Node>();
+        list.add(root);
+        return getWith(list, 1);
+    }
+
+    private int getWith(List<Node> list, Integer max) {
+        int count = 0;
+        ChildType childType;
+        List<Node> childNodeList = new ArrayList<Node>();
+        for (Node node : list) {
+            childType = node.getChildType();
+            if (ChildType.NONE != childType) {
+                count += node.directChildSize();
+                if (node.getLeftChild() != null) {
+                    childNodeList.add(node.getLeftChild());
+                }
+                if (node.getRigthChild() != null) {
+                    childNodeList.add(node.getRigthChild());
+                }
+            }
+        }
+        if (max < count) {
+            max = count;
+        }
+        if (!childNodeList.isEmpty()) {
+            return getWith(childNodeList, max);
+        } else {
+            return max;
+        }
+    }
+
+    /**
+     * 输出二叉树
+     *
+     * @param tree
+     */
     public static void print(BinaryTree tree) {
         tree.preIterator();
         System.out.println();
@@ -391,16 +431,29 @@ public class BinaryTree {
         tree.levelIterator();
     }
 
+    /**
+     * 测试获取节点的深度
+     *
+     * @param datas
+     * @param target
+     * @throws Exception
+     */
     public static void testGetDeep(int[] datas, int target) throws Exception {
         BinaryTree tree = init(datas);
         System.out.println(target + " deep :" + tree.getDeepth(target));
-        print(tree);
+//        print(tree);
+    }
+
+    public static void testGetWith(int[] datas) {
+        BinaryTree tree = init(datas);
+        System.out.println("with: " + tree.getWith());
     }
 
     public static void main(String[] args) throws Exception {
         int[] datas = new int[]{9, 23, 6, 8, -20, 78, 45, 22, 10, -10};
 //        testDelete(datas, 22);
-        testGetDeep(datas, 10);
+//        testGetDeep(datas, 22);
+        testGetWith(datas);
     }
 
 
