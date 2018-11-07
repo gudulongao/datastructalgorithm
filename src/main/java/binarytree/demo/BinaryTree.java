@@ -3,8 +3,7 @@ package binarytree.demo;
 import binarytree.demo.bean.ChildType;
 import binarytree.demo.bean.Node;
 
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.*;
 
 /**
  * 二叉树
@@ -322,6 +321,44 @@ public class BinaryTree {
     }
 
     /**
+     * 获取深度
+     *
+     * @param target 目标数据
+     * @return 深度
+     */
+    public int getDeepth(int target) {
+        if (root == null) {
+            return -1;
+        }
+        Node curr = root;
+        int deep = 0;
+        while (curr != null) {
+            if (target == curr.getData()) {
+                return deep;
+            } else {
+                deep++;
+                if (target < curr.getData()) {
+                    curr = curr.getLeftChild();
+                } else {
+                    curr = curr.getRigthChild();
+                }
+            }
+        }
+        return -1;
+    }
+
+    public static void print(BinaryTree tree) {
+        tree.preIterator();
+        System.out.println();
+        tree.middleIterator();
+        System.out.println();
+        tree.postIterator();
+        System.out.println();
+        tree.levelIterator();
+        System.out.println();
+    }
+
+    /**
      * 初始化一个二叉树
      *
      * @param datas 数据数组
@@ -335,15 +372,16 @@ public class BinaryTree {
         for (int data : datas) {
             tree.insert(data);
         }
-        System.out.print("init tree success.");
-        tree.levelIterator();
+        System.out.println("init tree success.");
+        print(tree);
         return tree;
     }
 
     /**
      * 测试删除
+     *
      * @param datas 初始化数据数组
-     * @param data 删除数据
+     * @param data  删除数据
      * @throws Exception
      */
     public static void testDelete(int[] datas, int data) throws Exception {
@@ -353,8 +391,17 @@ public class BinaryTree {
         tree.levelIterator();
     }
 
-    public static void main(String[] args) throws Exception {
-        testDelete(new int[]{-10, -1, 1, 2, 3, 4, 5, 6, 7, 18, 22, 9, 10, 12, 44, 102, 22}, 4);
+    public static void testGetDeep(int[] datas, int target) throws Exception {
+        BinaryTree tree = init(datas);
+        System.out.println(target + " deep :" + tree.getDeepth(target));
+        print(tree);
     }
+
+    public static void main(String[] args) throws Exception {
+        int[] datas = new int[]{9, 23, 6, 8, -20, 78, 45, 22, 10, -10};
+//        testDelete(datas, 22);
+        testGetDeep(datas, 10);
+    }
+
 
 }
