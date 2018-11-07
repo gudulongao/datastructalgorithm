@@ -321,37 +321,40 @@ public class BinaryTree {
         return parent.getData();
     }
 
-    public static void main(String[] args) throws Exception {
+    /**
+     * 初始化一个二叉树
+     *
+     * @param datas 数据数组
+     * @return 二叉树实例
+     */
+    public static BinaryTree init(int... datas) {
         BinaryTree tree = new BinaryTree();
-        tree.insert(7);
-        tree.insert(2);
-        tree.insert(4);
-        tree.insert(1);
-        tree.insert(10);
-        tree.insert(-1);
-        tree.insert(5);
-        tree.insert(6);
-        tree.insert(3);
-        tree.insert(8);
-        tree.insert(9);
-        tree.insert(-10);
-        tree.middleIterator();
-        System.out.println();
-        tree.preIterator();
-        System.out.println();
-        tree.postIterator();
-        System.out.println();
+        if (datas == null || datas.length == 0) {
+            return tree;
+        }
+        for (int data : datas) {
+            tree.insert(data);
+        }
+        System.out.print("init tree success.");
         tree.levelIterator();
-        System.out.println();
-        System.out.println("max value: " + tree.findMax());
-        System.out.println("min value: " + tree.findMin());
-        tree.delete(2);
-        System.out.print("delete 2: ");
+        return tree;
+    }
+
+    /**
+     * 测试删除
+     * @param datas 初始化数据数组
+     * @param data 删除数据
+     * @throws Exception
+     */
+    public static void testDelete(int[] datas, int data) throws Exception {
+        BinaryTree tree = init(datas);
+        System.out.println("delete " + data);
+        tree.delete(data);
         tree.levelIterator();
-//        System.out.println();
-//        tree.delete(6);
-//        System.out.print("delete 6:");
-//        tree.levelIterator();
+    }
+
+    public static void main(String[] args) throws Exception {
+        testDelete(new int[]{-10, -1, 1, 2, 3, 4, 5, 6, 7, 18, 22, 9, 10, 12, 44, 102, 22}, 4);
     }
 
 }
