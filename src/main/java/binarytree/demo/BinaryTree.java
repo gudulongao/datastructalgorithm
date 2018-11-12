@@ -157,10 +157,36 @@ public class BinaryTree {
             root = null;
             return true;
         }
-        Node target = null;
-        ChildType targetType = null;
-        Node curr = root;
-        Node parent = curr;
+        //深度优先遍历，找到目标节点
+        TargetNode deleteTarget = findDeleteTarget(data);
+        Node target = deleteTarget.getTarget();
+        Node parent = deleteTarget.getTargetParent();
+        ChildType targetType = deleteTarget.getTargetType();
+        ChildType targetChildType = target.getChildType();
+        //目标节点为叶子节点（无子节点）
+        if (ChildType.NONE == targetChildType) {
+            return deleteNoChild(parent, targetType);
+        }
+        //目标节点有一个子节点
+        else if (ChildType.LEFT == targetChildType || ChildType.RIGHT == targetChildType) {
+            return deleteSingleChild(parent, target, targetType, targetChildType);
+        }
+        //目标有两个子节点
+        else {
+            return deleteBothChild(parent, target, targetType);
+        }
+    }
+
+    /**
+     * 查找目标节点
+     *
+     * @param data 目标数据值
+     * @return 目标节点
+     * @throws Exception
+     */
+    private TargetNode findDeleteTarget(int data) throws Exception {
+        ChildType targetType = null, targetChildType;
+        Node target = null, curr = root, parent = curr;
         while (curr != null) {
             if (curr.getData() == data) {
                 target = curr;
@@ -178,14 +204,7 @@ public class BinaryTree {
         if (target == null) {
             throw new Exception("could not find data :" + data);
         }
-        ChildType targetChildType = target.getChildType();
-        if (ChildType.NONE == targetChildType) {
-            return deleteNoChild(parent, targetType);
-        } else if (ChildType.LEFT == targetChildType || ChildType.RIGHT == targetChildType) {
-            return deleteSingleChild(parent, target, targetType, targetChildType);
-        } else {
-            return deleteBothChild(parent, target, targetType);
-        }
+        return new TargetNode(target, parent, targetType);
     }
 
     /**
@@ -241,44 +260,122 @@ public class BinaryTree {
      * @return 结果
      */
     private boolean deleteBothChild(Node parent, Node target, ChildType targetType) throws Exception {
-        Node targetLChild = target.getLeftChild();
         Node targetRCild = target.getRigthChild();
         //如果目标节点的右子节点无左子树，即目标的右子节点为后继节点
         if (targetRCild.getLeftChild() == null) {
-            //父节点的右子树为后继节点
-            parent.setRigthChild(targetRCild);
-            //目标节点的左子树为后继节点的左子树
-            targetRCild.setLeftChild(targetLChild);
-            return true;
+            return deleteReplaceNoLChild(parent, target, targetType);
         }
         //如果目标即诶单的右子节点有左子树，则需要遍历找到后继节点（目标节点右子树中的最小值--右子树的最左节点）
         else {
-            Node curr = targetRCild;
-            Node replaceNode = null, repalceParent = target, replaceChild;
-            while (curr != null) {
-                replaceChild = curr.getLeftChild();
-                if (replaceChild == null) {
-                    replaceNode = curr;
-                    break;
-                }
-                repalceParent = curr;
-                curr = curr.getLeftChild();
+            return deleteReplaceHasLChild(parent, target, targetType);
+        }
+    }
+
+    /**
+     * 删除后继节点为目标节点的右子节点（目标节点的右子树无左子树时）
+     *
+     * @param parent     目标节点的父节点
+     * @param target     目标节点
+     * @param targetType 目标节点类型
+     * @return 删除结果
+     */
+    private boolean deleteReplaceNoLChild(Node parent, Node target, ChildType targetType) {
+        Node targetLChild = target.getLeftChild(), targetRCild = target.getRigthChild();
+        //后继节点为父节点的子节点
+        parent.setRigthChild(targetRCild);
+        if (ChildType.LEFT == targetType) {
+            parent.setLeftChild(targetRCild);
+        } else if (ChildType.RIGHT == targetType) {
+            parent.setRigthChild(targetRCild);
+        }
+        //目标节点的左子树为后继节点的左子树
+        targetRCild.setLeftChild(targetLChild);
+        return true;
+    }
+
+    /**
+     * 删除后继节点为目标节点右子树的左子节点（目标节点的右子节点有左子树）
+     *
+     * @param parent     目标节点的父级节点
+     * @param target     目标节点
+     * @param targetType 目标节点类型
+     * @return 删除结果
+     * @throws Exception
+     */
+    private boolean deleteReplaceHasLChild(Node parent, Node target, ChildType targetType) throws Exception {
+        Node targetLChild = target.getLeftChild(), targetRCild = target.getRigthChild();
+        //查找后继节点信息
+        TargetNode replaceTarget = findReplaceNode(targetLChild);
+        //获取后继节点以及后继节点的父级节点
+        Node replaceNode = replaceTarget.getTarget();
+        Node replaceParent = replaceTarget.getTargetParent();
+        //后继节点的右子树作为后继节点的父节点的左子节点（整个查找机制就是要找到最左节点，故后继节点没有左子节点）
+        replaceParent.setLeftChild(replaceNode.getRigthChild());
+        //将目标节点的右子树作为后继节点的右子树
+        replaceNode.setRigthChild(targetRCild);
+        //将目标节点的左子树作为后继节点的左子树
+        replaceNode.setLeftChild(targetLChild);
+        //将后继节替换目标节点父节点的子树
+        if (ChildType.LEFT == targetType) {
+            parent.setLeftChild(replaceNode);
+        } else if (ChildType.RIGHT == targetType) {
+            parent.setRigthChild(replaceNode);
+        } else {
+            throw new Exception("wrong target child type!");
+        }
+        return true;
+    }
+
+    private TargetNode findReplaceNode(Node targetRChild) {
+        Node curr = targetRChild, repalceParent = null, replaceNode = null, replaceChild = null;
+        while (curr != null) {
+            replaceChild = curr.getLeftChild();
+            if (replaceChild == null) {
+                replaceNode = curr;
+                break;
             }
-            //将后继节点的右子树作为后继节点父节点的左子树
-            repalceParent.setLeftChild(replaceNode.getRigthChild());
-            //将目标节点的右子树作为后继节点的右子树
-            replaceNode.setRigthChild(targetRCild);
-            //将目标节点的左子树作为后继节点的左子树
-            replaceNode.setLeftChild(targetLChild);
-            //将后继节替换目标节点父节点的子树
-            if (ChildType.LEFT == targetType) {
-                parent.setLeftChild(replaceNode);
-            } else if (ChildType.RIGHT == targetType) {
-                parent.setRigthChild(replaceNode);
-            } else {
-                throw new Exception("wrong target child type!");
-            }
-            return true;
+            repalceParent = curr;
+            curr = curr.getLeftChild();
+        }
+        return new TargetNode(repalceParent, replaceNode, ChildType.LEFT);
+    }
+
+    class TargetNode {
+        Node target;
+        Node targetParent;
+        ChildType targetType;
+
+        public TargetNode(Node target, Node targetParent, ChildType targetType) {
+            this.target = target;
+            this.targetParent = targetParent;
+            this.targetType = targetType;
+        }
+
+        public TargetNode() {
+        }
+
+        public Node getTarget() {
+            return target;
+        }
+
+        public void setTarget(Node target) {
+            this.target = target;
+        }
+
+        public Node getTargetParent() {
+            return targetParent;
+        }
+
+        public void setTargetParent(Node targetParent) {
+            this.targetParent = targetParent;
+        }
+
+        public ChildType getTargetType() {
+            return targetType;
+        }
+
+        public void setTargetType(ChildType targetType) {
+            this.targetType = targetType;
         }
     }
 
