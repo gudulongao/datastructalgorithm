@@ -456,6 +456,7 @@ public class BinaryTree {
     private int getWith(List<Node> list, Integer max) {
         int count = 0;
         ChildType childType;
+        //构建新的子节点队列
         List<Node> childNodeList = new ArrayList<Node>();
         for (Node node : list) {
             childType = node.getChildType();
@@ -476,6 +477,74 @@ public class BinaryTree {
             return getWith(childNodeList, max);
         } else {
             return max;
+        }
+    }
+
+    /**
+     * 获取高度
+     *
+     * @param data 指定数据
+     * @return 指定数据的高度（距离叶子节点的最大距离）
+     * @throws Exception
+     */
+    public int getHeight(int data) throws Exception {
+        if (root == null) {
+            throw new Exception("empty tree!");
+        }
+        Node target = findTarget(data);
+        return getHeight(target, 0);
+    }
+
+    /**
+     * 查找目标节点
+     *
+     * @param data 目标值
+     * @return 目标节点
+     * @throws Exception
+     */
+    private Node findTarget(int data) throws Exception {
+        Node curr = root, target = null;
+        while (curr != null) {
+            if (data == curr.getData()) {
+                target = curr;
+                break;
+            } else if (data < curr.getData()) {
+                curr = curr.getLeftChild();
+            } else {
+                curr = curr.getRigthChild();
+            }
+        }
+        if (target == null) {
+            throw new Exception("could not find target:" + data);
+        }
+        return target;
+    }
+
+    /**
+     * 获取高度（递归）
+     *
+     * @param node   当前节点
+     * @param height 当前累计高度
+     * @return 当前高度
+     * @throws Exception
+     */
+    private int getHeight(Node node, int height) throws Exception {
+        ChildType childType = node.getChildType();
+        if (ChildType.NONE == childType) {
+            return height;
+        } else {
+            height++;
+            if (ChildType.LEFT == childType) {
+                return getHeight(node.getLeftChild(), height);
+            } else if (ChildType.RIGHT == childType) {
+                return getHeight(node.getRigthChild(), height);
+            } else if (ChildType.BOTH == childType) {
+                int heightL = getHeight(node.getLeftChild(), height);
+                int heightR = getHeight(node.getRigthChild(), height);
+                return heightL > heightR ? heightL : heightR;
+            } else {
+                throw new Exception("wrong child type!");
+            }
         }
     }
 
@@ -546,11 +615,17 @@ public class BinaryTree {
         System.out.println("with: " + tree.getWith());
     }
 
+    public static void testGetHeight(int[] datas) throws Exception {
+        BinaryTree tree = init(datas);
+        System.out.println("getHeight: " + tree.getHeight(9));
+    }
+
     public static void main(String[] args) throws Exception {
         int[] datas = new int[]{9, 23, 6, 8, -20, 78, 45, 22, 10, -10};
 //        testDelete(datas, 22);
 //        testGetDeep(datas, 22);
-        testGetWith(datas);
+//        testGetWith(datas);
+        testGetHeight(datas);
     }
 
 
