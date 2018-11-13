@@ -591,10 +591,8 @@ public class BinaryTree {
         //下一层子节点为空，则表明当前是最后一层即高度为0的层，深度最大的层
         if (!newChildList.isEmpty()) {
             result.addAll(newResult);
-            toArray(newChildList, result);
-        } else {
-            return;
         }
+        toArray(newChildList, result);
     }
 
     /**
