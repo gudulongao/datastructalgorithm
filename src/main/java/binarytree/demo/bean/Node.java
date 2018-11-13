@@ -1,7 +1,7 @@
 package binarytree.demo.bean;
 
 public class Node {
-    private int data;
+    private Integer data = null;
     private Node leftChild = null;
     private Node rigthChild = null;
 
@@ -54,7 +54,7 @@ public class Node {
         }
     }
 
-    public int getData() {
+    public Integer getData() {
         return data;
     }
 

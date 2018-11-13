@@ -491,7 +491,9 @@ public class BinaryTree {
         if (root == null) {
             throw new Exception("empty tree!");
         }
+        //查找目标节点
         Node target = findTarget(data);
+        //递归查找目标节点的深度
         return getHeight(target, 0);
     }
 
@@ -523,28 +525,75 @@ public class BinaryTree {
     /**
      * 获取高度（递归）
      *
-     * @param node   当前节点
+     * @param curr   当前节点
      * @param height 当前累计高度
      * @return 当前高度
      * @throws Exception
      */
-    private int getHeight(Node node, int height) throws Exception {
-        ChildType childType = node.getChildType();
+    private int getHeight(Node curr, int height) throws Exception {
+        ChildType childType = curr.getChildType();
         if (ChildType.NONE == childType) {
             return height;
         } else {
             height++;
             if (ChildType.LEFT == childType) {
-                return getHeight(node.getLeftChild(), height);
+                return getHeight(curr.getLeftChild(), height);
             } else if (ChildType.RIGHT == childType) {
-                return getHeight(node.getRigthChild(), height);
+                return getHeight(curr.getRigthChild(), height);
             } else if (ChildType.BOTH == childType) {
-                int heightL = getHeight(node.getLeftChild(), height);
-                int heightR = getHeight(node.getRigthChild(), height);
+                int heightL = getHeight(curr.getLeftChild(), height);
+                int heightR = getHeight(curr.getRigthChild(), height);
                 return heightL > heightR ? heightL : heightR;
             } else {
                 throw new Exception("wrong child type!");
             }
+        }
+    }
+
+    public Node[] toArray() {
+        if (root == null) {
+            return null;
+        }
+        Node curr = root;
+        List<Node> result = new ArrayList<Node>();
+        List<Node> childList = new ArrayList<Node>();
+        result.add(curr);
+        childList.add(curr);
+        toArray(childList, result);
+        return result.toArray(new Node[result.size()]);
+    }
+
+    private void toArray(List<Node> childList, List<Node> result) {
+        if (childList.isEmpty()) {
+            return;
+        }
+        //下一层子节点队列
+        List<Node> newChildList = new ArrayList<Node>();
+        //下一层数组数据队列
+        List<Node> newResult = new ArrayList<Node>();
+        for (Node node : childList) {
+            if (node == null) {
+                continue;
+            }
+            if (node.getLeftChild() != null) {
+                newChildList.add(node.getLeftChild());
+                newResult.add(node.getLeftChild());
+            } else {
+                newResult.add(new Node());
+            }
+            if (node.getRigthChild() != null) {
+                newChildList.add(node.getRigthChild());
+                newResult.add(node.getRigthChild());
+            } else {
+                newResult.add(new Node());
+            }
+        }
+        //下一层子节点为空，则表明当前是最后一层即高度为0的层，深度最大的层
+        if (!newChildList.isEmpty()) {
+            result.addAll(newResult);
+            toArray(newChildList, result);
+        } else {
+            return;
         }
     }
 
@@ -620,12 +669,26 @@ public class BinaryTree {
         System.out.println("getHeight: " + tree.getHeight(9));
     }
 
+    public static void testToArray(int[] datas) throws Exception {
+        BinaryTree tree = init(datas);
+        Node[] nodes = tree.toArray();
+        System.out.print("to array: ");
+        for (Node node : nodes) {
+            if (node == null) {
+                System.out.print(" null ");
+            } else {
+                System.out.print((node.getData() == null) ? " null " : " " + node.getData() + " ");
+            }
+        }
+    }
+
     public static void main(String[] args) throws Exception {
         int[] datas = new int[]{9, 23, 6, 8, -20, 78, 45, 22, 10, -10};
 //        testDelete(datas, 22);
 //        testGetDeep(datas, 22);
 //        testGetWith(datas);
-        testGetHeight(datas);
+//        testGetHeight(datas);
+        testToArray(datas);
     }
 
 
