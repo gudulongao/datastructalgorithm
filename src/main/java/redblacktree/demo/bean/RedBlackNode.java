@@ -1,5 +1,7 @@
 package redblacktree.demo.bean;
 
+import binarytree.demo.bean.ChildType;
+
 /**
  * 红黑树节点
  */
@@ -76,25 +78,15 @@ public class RedBlackNode<T extends Comparable<T>> {
         this.color = color;
     }
 
+    public ChildType getNodeType() {
+        if (parent == null) {
+            return ChildType.NONE;
+        }
+        return parent.getLeftChild() == this ? ChildType.LEFT : ChildType.RIGHT;
+    }
+
     @Override
     public String toString() {
         return "{key=" + key + ",color=" + color.getValue() + "}";
-    }
-
-    /**
-     * 颜色枚举
-     */
-    public static enum Color {
-        RED(1), BLACK(0);
-
-        private int value;
-
-        Color(int value) {
-            this.value = value;
-        }
-
-        public int getValue() {
-            return value;
-        }
     }
 }

@@ -1,5 +1,7 @@
 package redblacktree.demo;
 
+import binarytree.demo.bean.ChildType;
+import redblacktree.demo.bean.Color;
 import redblacktree.demo.bean.RedBlackNode;
 
 /**
@@ -128,7 +130,7 @@ public class RedBlackTree<T extends Comparable<T>> {
         //可作为新节点父的节点
         RedBlackNode<T> parent = findInsertAfterNode(newNode);
         //新节点为红色
-        newNode.setColor(RedBlackNode.Color.RED);
+        newNode.setColor(Color.RED);
         //新节点作为父的子节点
         newNode.setParent(parent);
         int compareResult = newNode.getKey().compareTo(parent.getKey());
@@ -147,6 +149,68 @@ public class RedBlackTree<T extends Comparable<T>> {
      * @param newNode 新节点
      */
     private void fixInsert(RedBlackNode<T> newNode) {
+        if (root == newNode) {
+            return;
+        }
+        //获取新节点的父节点
+        RedBlackNode<T> parent = newNode.getParent();
+        //父节点为黑色，则无需修正
+        if (Color.BLACK == parent.getColor()) {
+            return;
+        }
+        //获取新节点的祖父节点
+        RedBlackNode<T> grandpa = parent.getParent();
+        if (grandpa == null) {
+            return;
+        }
+        //获取新节点的叔叔节点
+        RedBlackNode<T> uncle = parent == grandpa.getLeftChild() ? grandpa.getRightChild() : grandpa.getLeftChild();
+        //新节点是父节点的子节点类型
+        ChildType newNodeType = newNode.getNodeType();
+        //父节点是祖父节点的子节点类型
+        ChildType parentType = parent.getNodeType();
+        //父节点以及叔叔节点都是红色
+        if ((Color.RED == parent.getColor()) && (Color.RED == uncle.getColor())) {
+            //父节点以及叔叔节点都变成黑色
+            parent.setColor(Color.BLACK);
+            uncle.setColor(Color.BLACK);
+            //如果祖父节点不是根节点，则将祖父节点变成红色，同时以祖父节点开始修正
+            if (root != grandpa) {
+                grandpa.setColor(Color.RED);
+            }
+            fixInsert(grandpa);
+        }
+        //父节点和新节点都是左子节点类型
+        else if (ChildType.LEFT == parentType && ChildType.LEFT == newNodeType) {
+            //以父节点进行右旋
+            rigthRotate(parent);
+            fixInsert(parent);
+        }
+        //父节点和新节点都是右子节点类型
+        else if (ChildType.RIGHT == parentType && ChildType.RIGHT == newNodeType) {
+            //以父节点进行左旋
+            leftRotate(parent);
+            fixInsert(parent);
+        }
+        //父节点是左子节点，新节点是右子节点
+        else if (ChildType.LEFT == parentType && ChildType.RIGHT == newNodeType) {
+            //以新节点进行左旋
+            leftRotate(newNode);
+            //以新节点进行右旋
+            rigthRotate(newNode);
+            fixInsert(parent);
+        }
+        //父节点是右子节点，新节点是左子节点
+        else if (ChildType.RIGHT == parentType && ChildType.LEFT == newNodeType) {
+            //以新节点进行右旋
+            rigthRotate(newNode);
+            //以新节点进行左旋
+            leftRotate(newNode);
+            fixInsert(parent);
+        }
+    }
+
+    public static void main(String[] args) {
 
     }
 }
