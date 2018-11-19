@@ -3,7 +3,7 @@ package binarytree.demo.bean;
 /**
  * 子树类型
  */
-public enum ChildType {
+public enum NodeType {
     /**
      * 没有子树
      */

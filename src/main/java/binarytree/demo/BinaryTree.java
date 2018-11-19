@@ -1,12 +1,16 @@
 package binarytree.demo;
 
-import binarytree.demo.bean.ChildType;
+import binarytree.demo.bean.NodeType;
 import binarytree.demo.bean.Node;
 
 import java.util.*;
 
 /**
  * 二叉树
+ *
+ * @author tangleic
+ * @date 20181110
+ * @deprecated 逻辑有缺陷
  */
 public class BinaryTree {
     /**
@@ -161,14 +165,14 @@ public class BinaryTree {
         TargetNode deleteTarget = findDeleteTarget(data);
         Node target = deleteTarget.getTarget();
         Node parent = deleteTarget.getTargetParent();
-        ChildType targetType = deleteTarget.getTargetType();
-        ChildType targetChildType = target.getChildType();
+        NodeType targetType = deleteTarget.getTargetType();
+        NodeType targetChildType = target.getChildType();
         //目标节点为叶子节点（无子节点）
-        if (ChildType.NONE == targetChildType) {
+        if (NodeType.NONE == targetChildType) {
             return deleteNoChild(parent, targetType);
         }
         //目标节点有一个子节点
-        else if (ChildType.LEFT == targetChildType || ChildType.RIGHT == targetChildType) {
+        else if (NodeType.LEFT == targetChildType || NodeType.RIGHT == targetChildType) {
             return deleteSingleChild(parent, target, targetType, targetChildType);
         }
         //目标有两个子节点
@@ -185,7 +189,7 @@ public class BinaryTree {
      * @throws Exception
      */
     private TargetNode findDeleteTarget(int data) throws Exception {
-        ChildType targetType = null, targetChildType;
+        NodeType targetType = null, targetChildType;
         Node target = null, curr = root, parent = curr;
         while (curr != null) {
             if (curr.getData() == data) {
@@ -195,10 +199,10 @@ public class BinaryTree {
             parent = curr;
             if (curr.getData() > data) {
                 curr = curr.getLeftChild();
-                targetType = ChildType.LEFT;
+                targetType = NodeType.LEFT;
             } else {
                 curr = curr.getRigthChild();
-                targetType = ChildType.RIGHT;
+                targetType = NodeType.RIGHT;
             }
         }
         if (target == null) {
@@ -214,11 +218,11 @@ public class BinaryTree {
      * @param type   叶子的类型
      * @return 删除结果
      */
-    private boolean deleteNoChild(Node parent, ChildType type) {
-        if (ChildType.LEFT == type) {
+    private boolean deleteNoChild(Node parent, NodeType type) {
+        if (NodeType.LEFT == type) {
             parent.setLeftChild(null);
             return true;
-        } else if (ChildType.RIGHT == type) {
+        } else if (NodeType.RIGHT == type) {
             parent.setRigthChild(null);
             return true;
         }
@@ -234,17 +238,17 @@ public class BinaryTree {
      * @param targetChildType 目标节点子树的类型
      * @return 结果
      */
-    private boolean deleteSingleChild(Node parent, Node target, ChildType targetType, ChildType targetChildType) {
-        if (ChildType.LEFT == targetType) {
-            if (ChildType.LEFT == targetChildType) {
+    private boolean deleteSingleChild(Node parent, Node target, NodeType targetType, NodeType targetChildType) {
+        if (NodeType.LEFT == targetType) {
+            if (NodeType.LEFT == targetChildType) {
                 parent.setLeftChild(target.getLeftChild());
-            } else if (ChildType.RIGHT == targetChildType) {
+            } else if (NodeType.RIGHT == targetChildType) {
                 parent.setLeftChild(target.getRigthChild());
             }
-        } else if (ChildType.RIGHT == targetType) {
-            if (ChildType.LEFT == targetChildType) {
+        } else if (NodeType.RIGHT == targetType) {
+            if (NodeType.LEFT == targetChildType) {
                 parent.setRigthChild(target.getLeftChild());
-            } else if (ChildType.RIGHT == targetChildType) {
+            } else if (NodeType.RIGHT == targetChildType) {
                 parent.setRigthChild(target.getRigthChild());
             }
         }
@@ -259,7 +263,7 @@ public class BinaryTree {
      * @param targetType 目标子树类型
      * @return 结果
      */
-    private boolean deleteBothChild(Node parent, Node target, ChildType targetType) throws Exception {
+    private boolean deleteBothChild(Node parent, Node target, NodeType targetType) throws Exception {
         Node targetRCild = target.getRigthChild();
         //如果目标节点的右子节点无左子树，即目标的右子节点为后继节点
         if (targetRCild.getLeftChild() == null) {
@@ -279,13 +283,13 @@ public class BinaryTree {
      * @param targetType 目标节点类型
      * @return 删除结果
      */
-    private boolean deleteReplaceNoLChild(Node parent, Node target, ChildType targetType) {
+    private boolean deleteReplaceNoLChild(Node parent, Node target, NodeType targetType) {
         Node targetLChild = target.getLeftChild(), targetRCild = target.getRigthChild();
         //后继节点为父节点的子节点
         parent.setRigthChild(targetRCild);
-        if (ChildType.LEFT == targetType) {
+        if (NodeType.LEFT == targetType) {
             parent.setLeftChild(targetRCild);
-        } else if (ChildType.RIGHT == targetType) {
+        } else if (NodeType.RIGHT == targetType) {
             parent.setRigthChild(targetRCild);
         }
         //目标节点的左子树为后继节点的左子树
@@ -302,7 +306,7 @@ public class BinaryTree {
      * @return 删除结果
      * @throws Exception
      */
-    private boolean deleteReplaceHasLChild(Node parent, Node target, ChildType targetType) throws Exception {
+    private boolean deleteReplaceHasLChild(Node parent, Node target, NodeType targetType) throws Exception {
         Node targetLChild = target.getLeftChild(), targetRCild = target.getRigthChild();
         //查找后继节点信息
         TargetNode replaceTarget = findReplaceNode(targetLChild);
@@ -316,9 +320,9 @@ public class BinaryTree {
         //将目标节点的左子树作为后继节点的左子树
         replaceNode.setLeftChild(targetLChild);
         //将后继节替换目标节点父节点的子树
-        if (ChildType.LEFT == targetType) {
+        if (NodeType.LEFT == targetType) {
             parent.setLeftChild(replaceNode);
-        } else if (ChildType.RIGHT == targetType) {
+        } else if (NodeType.RIGHT == targetType) {
             parent.setRigthChild(replaceNode);
         } else {
             throw new Exception("wrong target child type!");
@@ -337,15 +341,15 @@ public class BinaryTree {
             repalceParent = curr;
             curr = curr.getLeftChild();
         }
-        return new TargetNode(repalceParent, replaceNode, ChildType.LEFT);
+        return new TargetNode(repalceParent, replaceNode, NodeType.LEFT);
     }
 
     class TargetNode {
         Node target;
         Node targetParent;
-        ChildType targetType;
+        NodeType targetType;
 
-        public TargetNode(Node target, Node targetParent, ChildType targetType) {
+        public TargetNode(Node target, Node targetParent, NodeType targetType) {
             this.target = target;
             this.targetParent = targetParent;
             this.targetType = targetType;
@@ -370,11 +374,11 @@ public class BinaryTree {
             this.targetParent = targetParent;
         }
 
-        public ChildType getTargetType() {
+        public NodeType getTargetType() {
             return targetType;
         }
 
-        public void setTargetType(ChildType targetType) {
+        public void setTargetType(NodeType targetType) {
             this.targetType = targetType;
         }
     }
@@ -455,12 +459,12 @@ public class BinaryTree {
 
     private int getWith(List<Node> list, Integer max) {
         int count = 0;
-        ChildType childType;
+        NodeType childType;
         //构建新的子节点队列
         List<Node> childNodeList = new ArrayList<Node>();
         for (Node node : list) {
             childType = node.getChildType();
-            if (ChildType.NONE != childType) {
+            if (NodeType.NONE != childType) {
                 count += node.directChildSize();
                 if (node.getLeftChild() != null) {
                     childNodeList.add(node.getLeftChild());
@@ -531,16 +535,16 @@ public class BinaryTree {
      * @throws Exception
      */
     private int getHeight(Node curr, int height) throws Exception {
-        ChildType childType = curr.getChildType();
-        if (ChildType.NONE == childType) {
+        NodeType childType = curr.getChildType();
+        if (NodeType.NONE == childType) {
             return height;
         } else {
             height++;
-            if (ChildType.LEFT == childType) {
+            if (NodeType.LEFT == childType) {
                 return getHeight(curr.getLeftChild(), height);
-            } else if (ChildType.RIGHT == childType) {
+            } else if (NodeType.RIGHT == childType) {
                 return getHeight(curr.getRigthChild(), height);
-            } else if (ChildType.BOTH == childType) {
+            } else if (NodeType.BOTH == childType) {
                 int heightL = getHeight(curr.getLeftChild(), height);
                 int heightR = getHeight(curr.getRigthChild(), height);
                 return heightL > heightR ? heightL : heightR;

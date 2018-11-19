@@ -26,15 +26,15 @@ public class Node {
      *
      * @return
      */
-    public ChildType getChildType() {
+    public NodeType getChildType() {
         if (leftChild != null && rigthChild != null) {
-            return ChildType.BOTH;
+            return NodeType.BOTH;
         } else if (leftChild != null && rigthChild == null) {
-            return ChildType.LEFT;
+            return NodeType.LEFT;
         } else if (leftChild == null && rigthChild != null) {
-            return ChildType.RIGHT;
+            return NodeType.RIGHT;
         } else {
-            return ChildType.NONE;
+            return NodeType.NONE;
         }
     }
 
@@ -44,10 +44,10 @@ public class Node {
      * @return
      */
     public int directChildSize() {
-        ChildType type = getChildType();
-        if (ChildType.NONE == type) {
+        NodeType type = getChildType();
+        if (NodeType.NONE == type) {
             return 0;
-        } else if (ChildType.BOTH == type) {
+        } else if (NodeType.BOTH == type) {
             return 2;
         } else {
             return 1;

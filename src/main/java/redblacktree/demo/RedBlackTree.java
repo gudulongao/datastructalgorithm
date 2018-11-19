@@ -1,6 +1,6 @@
 package redblacktree.demo;
 
-import binarytree.demo.bean.ChildType;
+import binarytree.demo.bean.NodeType;
 import redblacktree.demo.bean.Color;
 import redblacktree.demo.bean.RedBlackNode;
 
@@ -166,9 +166,9 @@ public class RedBlackTree<T extends Comparable<T>> {
         //获取新节点的叔叔节点
         RedBlackNode<T> uncle = parent == grandpa.getLeftChild() ? grandpa.getRightChild() : grandpa.getLeftChild();
         //新节点是父节点的子节点类型
-        ChildType newNodeType = newNode.getNodeType();
+        NodeType newNodeType = newNode.getNodeType();
         //父节点是祖父节点的子节点类型
-        ChildType parentType = parent.getNodeType();
+        NodeType parentType = parent.getNodeType();
         //父节点以及叔叔节点都是红色
         if ((Color.RED == parent.getColor()) && (Color.RED == uncle.getColor())) {
             //父节点以及叔叔节点都变成黑色
@@ -181,19 +181,19 @@ public class RedBlackTree<T extends Comparable<T>> {
             fixInsert(grandpa);
         }
         //父节点和新节点都是左子节点类型
-        else if (ChildType.LEFT == parentType && ChildType.LEFT == newNodeType) {
+        else if (NodeType.LEFT == parentType && NodeType.LEFT == newNodeType) {
             //以父节点进行右旋
             rigthRotate(parent);
             fixInsert(parent);
         }
         //父节点和新节点都是右子节点类型
-        else if (ChildType.RIGHT == parentType && ChildType.RIGHT == newNodeType) {
+        else if (NodeType.RIGHT == parentType && NodeType.RIGHT == newNodeType) {
             //以父节点进行左旋
             leftRotate(parent);
             fixInsert(parent);
         }
         //父节点是左子节点，新节点是右子节点
-        else if (ChildType.LEFT == parentType && ChildType.RIGHT == newNodeType) {
+        else if (NodeType.LEFT == parentType && NodeType.RIGHT == newNodeType) {
             //以新节点进行左旋
             leftRotate(newNode);
             //以新节点进行右旋
@@ -201,16 +201,12 @@ public class RedBlackTree<T extends Comparable<T>> {
             fixInsert(parent);
         }
         //父节点是右子节点，新节点是左子节点
-        else if (ChildType.RIGHT == parentType && ChildType.LEFT == newNodeType) {
+        else if (NodeType.RIGHT == parentType && NodeType.LEFT == newNodeType) {
             //以新节点进行右旋
             rigthRotate(newNode);
             //以新节点进行左旋
             leftRotate(newNode);
             fixInsert(parent);
         }
-    }
-
-    public static void main(String[] args) {
-
     }
 }

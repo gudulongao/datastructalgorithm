@@ -1,6 +1,6 @@
 package redblacktree.demo.bean;
 
-import binarytree.demo.bean.ChildType;
+import binarytree.demo.bean.NodeType;
 
 /**
  * 红黑树节点
@@ -78,11 +78,11 @@ public class RedBlackNode<T extends Comparable<T>> {
         this.color = color;
     }
 
-    public ChildType getNodeType() {
+    public NodeType getNodeType() {
         if (parent == null) {
-            return ChildType.NONE;
+            return NodeType.NONE;
         }
-        return parent.getLeftChild() == this ? ChildType.LEFT : ChildType.RIGHT;
+        return parent.getLeftChild() == this ? NodeType.LEFT : NodeType.RIGHT;
     }
 
     @Override
