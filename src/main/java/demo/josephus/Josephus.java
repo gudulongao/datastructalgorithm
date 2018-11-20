@@ -1,4 +1,4 @@
-package josephus.demo;
+package demo.josephus;
 
 import java.util.Collections;
 import java.util.LinkedList;
