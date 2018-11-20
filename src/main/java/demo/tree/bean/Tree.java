@@ -1,6 +1,6 @@
 package demo.tree.bean;
 
-import demo.tree.common.ITree;
+import demo.tree.itf.ITree;
 
 import java.util.ArrayList;
 import java.util.List;

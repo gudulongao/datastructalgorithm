@@ -1,4 +1,4 @@
-package demo.tree.common;
+package demo.tree.itf;
 
 /**
  * 树的定义

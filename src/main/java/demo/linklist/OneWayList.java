@@ -1,4 +1,4 @@
-package linklist.demo.bean;
+package demo.linklist;
 
 public class OneWayList {
     private OneWayNode head;
