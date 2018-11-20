@@ -48,6 +48,7 @@ public class BinaryTree<T extends Comparable<T>> extends Tree<T> {
         } else {
             parent.setRigthChild(newNode);
         }
+        size++;
     }
 
     public boolean delete(T key) throws Exception {
@@ -63,15 +64,20 @@ public class BinaryTree<T extends Comparable<T>> extends Tree<T> {
         TargetNodeInfo targetNodeInfo = findDeleteTarget(node);
         Node<T> targetNode = targetNodeInfo.getTargetNode();
         NodeType targetChildType = targetNode.childType();
+        boolean delFlag;
         if (NodeType.NONE == targetChildType) {
-            return delTargetHasNoChild(targetNodeInfo);
+            delFlag = delTargetHasNoChild(targetNodeInfo);
         } else if (NodeType.LEFT == targetChildType || NodeType.RIGHT == targetChildType) {
-            return delTargetHasSingleChild(targetNodeInfo);
+            delFlag = delTargetHasSingleChild(targetNodeInfo);
         } else if (NodeType.BOTH == targetChildType) {
-            return delTargetHasBothChild(targetNodeInfo);
+            delFlag = delTargetHasBothChild(targetNodeInfo);
         } else {
             throw new IllegalStateException();
         }
+        if (delFlag) {
+            size--;
+        }
+        return delFlag;
     }
 
     /**

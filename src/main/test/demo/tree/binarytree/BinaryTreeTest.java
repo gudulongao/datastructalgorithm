@@ -6,13 +6,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class BinaryTreeTest {
-    private Integer[] datas;
     private BinaryTree<Integer> tree = null;
 
     @Before
     public void init() throws Exception {
         tree = new BinaryTree<Integer>();
-        datas = new Integer[]{9, -1, 24, 3, 6, 7, 12, 2, 4, 32, 0, 5, 1};
+        Integer[] datas = new Integer[]{9, -1, 24, 3, 6, 7, 12, 2, 4, 32, 0, 5, 1};
         for (Integer data : datas) {
             tree.insert(data);
         }
@@ -31,8 +30,9 @@ public class BinaryTreeTest {
 
     @Test
     public void delete() throws Exception {
+        System.out.println("BinaryTreeTest.delete before size: " + tree.size());
         boolean delResult = tree.delete(3);
-        System.out.println("BinaryTreeTest.delete: " + delResult);
+        System.out.println("BinaryTreeTest.delete after size: " + tree.size());
         Assert.assertTrue(delResult);
     }
 }

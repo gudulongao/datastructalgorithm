@@ -10,6 +10,11 @@ import java.util.List;
  */
 public abstract class Tree<T extends Comparable<T>> implements ITree {
     protected Node<T> root;
+    protected int size = 0;
+
+    public int size() {
+        return size;
+    }
 
     /**
      * 插入
