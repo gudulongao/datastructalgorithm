@@ -212,7 +212,6 @@ public class BinaryTree<T extends Comparable<T>> extends Tree<T> {
         return new TargetNodeInfo(curr, parent, NodeType.LEFT);
     }
 
-
     /**
      * 目标节点信息
      */

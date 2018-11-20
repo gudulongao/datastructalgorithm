@@ -17,6 +17,66 @@ public abstract class Tree<T extends Comparable<T>> implements ITree {
     }
 
     /**
+     * 获取宽度
+     */
+    public int width() {
+        if (root == null) {
+            return 0;
+        }
+        List<Node<T>> list = new ArrayList<Node<T>>();
+        list.add(root);
+        return width(list, 1);
+    }
+
+    private int width(List<Node<T>> list, int maxWidth) {
+        List<Node<T>> childList = new ArrayList<Node<T>>();
+        for (Node<T> node : list) {
+            if (node.getLeftChild() != null) {
+                childList.add(node.getLeftChild());
+            }
+            if (node.getRigthChild() != null) {
+                childList.add(node.getRigthChild());
+            }
+        }
+        if (childList.isEmpty()) {
+            return maxWidth;
+        }
+        return width(childList, childList.size() > maxWidth ? childList.size() : maxWidth);
+    }
+
+    /**
+     * 获取指定关键词的深度
+     *
+     * @param key 指定关键词
+     */
+    public int deep(T key) throws Exception {
+        if (key == null) {
+            throw new IllegalArgumentException();
+        }
+        validateEmptyTree();
+        Node<T> curr = root, target = null;
+        int compareResult, deep = 0;
+        while (curr != null) {
+            compareResult = key.compareTo(curr.getKey());
+            if (compareResult == 0) {
+                target = curr;
+                break;
+            } else {
+                deep++;
+                if (compareResult < 0) {
+                    curr = curr.getLeftChild();
+                } else {
+                    curr = curr.getRigthChild();
+                }
+            }
+        }
+        if (target == null) {
+            throw new Exception("could not find " + key);
+        }
+        return deep;
+    }
+
+    /**
      * 插入
      *
      * @param newNode 新节点
