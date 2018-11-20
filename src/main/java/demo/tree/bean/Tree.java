@@ -77,6 +77,63 @@ public abstract class Tree<T extends Comparable<T>> implements ITree {
     }
 
     /**
+     * 获取指定关键词的高度
+     *
+     * @param key 指定关键词
+     */
+    public int height(T key) throws Exception {
+        validateEmptyTree();
+        Node<T> targetNode = findTargetNode(key);
+        return getHeight(targetNode);
+    }
+
+    /**
+     * 查找目标节点
+     *
+     * @param key 指定关键词
+     */
+    private Node<T> findTargetNode(T key) throws Exception {
+        Node<T> curr = root, target = null;
+        int compareResult;
+        while (curr != null) {
+            compareResult = key.compareTo(curr.getKey());
+            if (compareResult == 0) {
+                target = curr;
+                break;
+            } else if (compareResult < 0) {
+                curr = curr.getLeftChild();
+            } else {
+                curr = curr.getRigthChild();
+            }
+        }
+        if (target == null) {
+            throw new Exception("could not find " + key);
+        }
+        return target;
+    }
+
+    /**
+     * 获取指定节点的高度
+     *
+     * @param node 指定节点
+     */
+    private int getHeight(Node<T> node) throws Exception {
+        NodeType childType = node.childType();
+        if (NodeType.NONE == childType) {
+            return 0;
+        } else {
+            int leftH = 0, rightH = 0;
+            if (node.getLeftChild() != null) {
+                leftH = getHeight(node.getLeftChild());
+            }
+            if (node.getRigthChild() != null) {
+                rightH = getHeight(node.getRigthChild());
+            }
+            return leftH > rightH ? (leftH + 1) : (rightH + 1);
+        }
+    }
+
+    /**
      * 插入
      *
      * @param newNode 新节点

@@ -36,6 +36,7 @@ public class BinaryTreeTest {
         Assert.assertTrue(delResult);
     }
 
+    @Ignore
     @Test
     public void testDeep() throws Exception {
         int deep = tree.deep(5);
@@ -44,5 +45,15 @@ public class BinaryTreeTest {
         Assert.assertEquals(deep, 0);
         deep = tree.deep(3);
         Assert.assertEquals(deep, 2);
+    }
+
+    @Test
+    public void testHeigh() throws Exception {
+        int h = tree.height(5);
+        Assert.assertEquals(h, 0);
+        h = tree.height(6);
+        Assert.assertEquals(h, 2);
+        h = tree.height(9);
+        Assert.assertEquals(h, 5);
     }
 }
