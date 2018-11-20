@@ -1,11 +1,9 @@
 package demo.tree.binarytree;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class BinaryTreeTest {
     private Integer[] datas;
@@ -32,15 +30,9 @@ public class BinaryTreeTest {
     }
 
     @Test
-    public void insert() throws Exception {
-        System.out.println("BinaryTreeTest.insert");
-        tree.insert(78);
-    }
-
-    @Ignore
-    @Test
     public void delete() throws Exception {
-        System.out.println("BinaryTreeTest.delete");
-        tree.delete(3);
+        boolean delResult = tree.delete(3);
+        System.out.println("BinaryTreeTest.delete: " + delResult);
+        Assert.assertTrue(delResult);
     }
 }

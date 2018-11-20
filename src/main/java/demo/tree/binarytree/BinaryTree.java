@@ -61,7 +61,8 @@ public class BinaryTree<T extends Comparable<T>> extends Tree<T> {
         }
         validateEmptyTree();
         TargetNodeInfo targetNodeInfo = findDeleteTarget(node);
-        NodeType targetChildType = targetNodeInfo.getNodeType();
+        Node<T> targetNode = targetNodeInfo.getTargetNode();
+        NodeType targetChildType = targetNode.childType();
         if (NodeType.NONE == targetChildType) {
             return delTargetHasNoChild(targetNodeInfo);
         } else if (NodeType.LEFT == targetChildType || NodeType.RIGHT == targetChildType) {
@@ -198,7 +199,7 @@ public class BinaryTree<T extends Comparable<T>> extends Tree<T> {
     private TargetNodeInfo findDelReplaceNode(Node<T> targetNode) throws Exception {
         Node<T> rigthChild = targetNode.getRigthChild();
         Node<T> curr = rigthChild.getLeftChild(), parent = rigthChild;
-        while (NodeType.NONE != curr.childType()) {
+        while (curr.getLeftChild() != null) {
             parent = curr;
             curr = curr.getLeftChild();
         }
@@ -246,6 +247,6 @@ public class BinaryTree<T extends Comparable<T>> extends Tree<T> {
     }
 
     public static void main(String[] args) {
-        
+
     }
 }
