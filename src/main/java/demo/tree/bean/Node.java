@@ -1,6 +1,8 @@
 package demo.tree.bean;
 
 
+import demo.tree.itf.NodeType;
+
 /**
  * 节点
  *

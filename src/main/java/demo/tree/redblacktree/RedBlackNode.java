@@ -1,6 +1,7 @@
 package demo.tree.redblacktree;
 
 import demo.tree.bean.Node;
+import demo.tree.itf.NodeType;
 
 /**
  * 红黑树节点
@@ -17,6 +18,22 @@ public class RedBlackNode<T extends Comparable<T>> extends Node<T> {
     }
 
     public RedBlackNode() {
+    }
+
+    /**
+     * 当前节点是父节点子节点类型
+     *
+     * @return 节点类型
+     */
+    public NodeType nodeType() {
+        if (parent == null) {
+            return null;
+        }
+        if (this == parent.getLeftChild()) {
+            return NodeType.LEFT;
+        } else {
+            return NodeType.RIGHT;
+        }
     }
 
     @Override
