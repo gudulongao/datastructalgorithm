@@ -1,6 +1,7 @@
 package demo.tree.bean;
 
 import demo.tree.itf.ITree;
+import demo.tree.itf.NodeType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +15,13 @@ public abstract class Tree<T extends Comparable<T>> implements ITree {
 
     public int size() {
         return size;
+    }
+
+    /**
+     * 获取根节点
+     */
+    protected Node<T> getRoot() {
+        return root;
     }
 
     /**
@@ -136,17 +144,17 @@ public abstract class Tree<T extends Comparable<T>> implements ITree {
     /**
      * 插入
      *
-     * @param newNode 新节点
+     * @param newKey 新关键词
      */
-    public abstract void insert(Node<T> newNode) throws Exception;
+    public abstract void insert(T newKey) throws Exception;
 
     /**
      * 删除节点
      *
-     * @param node 目标节点
+     * @param key 目标关键词
      * @return 删除结果
      */
-    public abstract boolean delete(Node<T> node) throws Exception;
+    public abstract boolean delete(T key) throws Exception;
 
     /**
      * 校验是否是空树

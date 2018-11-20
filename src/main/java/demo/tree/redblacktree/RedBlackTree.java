@@ -1,6 +1,5 @@
 package demo.tree.redblacktree;
 
-import demo.tree.bean.Node;
 import demo.tree.bean.Tree;
 import demo.tree.itf.NodeType;
 
@@ -10,6 +9,11 @@ import demo.tree.itf.NodeType;
  * @param <T> 可排序的数据结构
  */
 public class RedBlackTree<T extends Comparable<T>> extends Tree<T> {
+
+    @Override
+    protected RedBlackNode<T> getRoot() {
+        return root == null ? null : (RedBlackNode<T>) root;
+    }
 
     /**
      * 左旋
@@ -66,20 +70,89 @@ public class RedBlackTree<T extends Comparable<T>> extends Tree<T> {
     }
 
     @Override
-    public void insert(Node<T> newNode) throws Exception {
+    public void insert(T newKey) throws Exception {
+        if (newKey == null) {
+            throw new IllegalArgumentException();
+        }
+        if (root == null) {
+            root = new RedBlackNode<T>(newKey, null, ColourType.BLACK);
+            return;
+        }
+        RedBlackNode<T> newNode = addNewNode(newKey);
+        insertFix(newNode);
     }
 
-    public void insert(T key) throws Exception {
-        insert(new RedBlackNode<T>(key, null));
+    /**
+     * 添加新节点
+     *
+     * @param newKey 新关键词
+     */
+    private RedBlackNode<T> addNewNode(T newKey) {
+        RedBlackNode<T> newNode = new RedBlackNode<T>(newKey, null, ColourType.RED);
+        RedBlackNode<T> curr = getRoot();
+        int compareFlag;
+        NodeType nodeType = null;
+        //遍历树，找到可以存储新关键词的位置
+        while (curr != null) {
+            compareFlag = newKey.compareTo(curr.getKey());
+            if (compareFlag < 0) {
+                curr = curr.getLeftChild();
+                nodeType = NodeType.LEFT;
+            } else {
+                curr = curr.getRigthChild();
+                nodeType = NodeType.RIGHT;
+            }
+        }
+        RedBlackNode<T> parent = curr.getParent();
+        //将新的节点添加到树中
+        newNode.setParent(parent);
+        if (NodeType.LEFT == nodeType) {
+            parent.setLeftChild(newNode);
+        } else {
+            parent.setRigthChild(newNode);
+        }
+        return newNode;
+    }
+
+    private void insertFix(RedBlackNode<T> newNode) throws Exception {
+        NodeType newNodeType = newNode.nodeType();
+        RedBlackNode<T> parent = newNode.getParent();
+        NodeType parentNodeType = parent.nodeType();
+        ColourType parentColour = parent.getColour();
+        RedBlackNode<T> grandPa = parent.getParent();
+        RedBlackNode<T> uncale = NodeType.LEFT == parent.nodeType() ? grandPa.getRigthChild() : grandPa.getLeftChild();
+        ColourType uncaleColour = uncale.getColour();
+        //父节点是黑色
+        if (ColourType.BLACK == parentColour) {
+
+        } else {
+            //父节点是红色，叔叔节点是红色
+            if (ColourType.RED == uncaleColour) {
+                parent.setColour(ColourType.BLACK);
+                uncale.setColour(ColourType.BLACK);
+                insertFix(grandPa);
+            }
+            //父节点是红色，叔叔节点是黑色
+            else {
+                if (NodeType.LEFT == parentNodeType && NodeType.LEFT == newNodeType) {
+                    rightRotate(parent);
+                } else if (NodeType.RIGHT == parentNodeType && NodeType.RIGHT == newNodeType) {
+                    leftRotate(parent);
+                } else if (NodeType.LEFT == parentNodeType && NodeType.RIGHT == newNodeType) {
+                    leftRotate(newNode);
+                    rightRotate(newNode);
+                } else if (NodeType.RIGHT == parentNodeType && NodeType.LEFT == newNodeType) {
+                    rightRotate(newNode);
+                    leftRotate(newNode);
+                }
+            }
+        }
+
     }
 
     @Override
-    public boolean delete(Node<T> node) throws Exception {
-        return false;
-    }
-
     public boolean delete(T key) throws Exception {
-        return delete(new RedBlackNode<T>(key, null));
+        return false;
     }
 
     public RedBlackTree(T key) {

@@ -1,8 +1,8 @@
 package demo.tree.binarytree;
 
 import demo.tree.bean.Node;
-import demo.tree.bean.NodeType;
 import demo.tree.bean.Tree;
+import demo.tree.itf.NodeType;
 
 /**
  * 二叉树
@@ -10,20 +10,13 @@ import demo.tree.bean.Tree;
  * @param <T> 可排序的数据结构
  */
 public class BinaryTree<T extends Comparable<T>> extends Tree<T> {
-    /**
-     * 新增节点
-     *
-     * @param newKey 新的关键词
-     */
-    public void insert(T newKey) throws Exception {
-        insert(new Node<T>(newKey));
-    }
 
     @Override
-    public void insert(Node<T> newNode) throws Exception {
-        if (newNode == null || newNode.getKey() == null) {
+    public void insert(T newKey) throws Exception {
+        if (newKey == null) {
             throw new IllegalArgumentException();
         }
+        Node<T> newNode = new Node<T>(newKey);
         if (root == null) {
             root = newNode;
             return;
@@ -51,17 +44,13 @@ public class BinaryTree<T extends Comparable<T>> extends Tree<T> {
         size++;
     }
 
-    public boolean delete(T key) throws Exception {
-        return delete(new Node<T>(key));
-    }
-
     @Override
-    public boolean delete(Node<T> node) throws Exception {
-        if (node == null || node.getKey() == null) {
+    public boolean delete(T key) throws Exception {
+        if (key == null) {
             throw new IllegalArgumentException();
         }
         validateEmptyTree();
-        TargetNodeInfo targetNodeInfo = findDeleteTarget(node);
+        TargetNodeInfo targetNodeInfo = findDeleteTarget(key);
         Node<T> targetNode = targetNodeInfo.getTargetNode();
         NodeType targetChildType = targetNode.childType();
         boolean delFlag;
@@ -83,15 +72,15 @@ public class BinaryTree<T extends Comparable<T>> extends Tree<T> {
     /**
      * 查找要删除的目标节点信息
      *
-     * @param node 要删除的节点
+     * @param key 关键词
      * @return 目标节点信息
      */
-    private TargetNodeInfo findDeleteTarget(Node<T> node) throws Exception {
+    private TargetNodeInfo findDeleteTarget(T key) throws Exception {
         Node<T> curr = root, parent = curr, target = null;
         int compareFlag;
         NodeType nodeType = null;
         while (curr != null) {
-            compareFlag = node.getKey().compareTo(curr.getKey());
+            compareFlag = key.compareTo(curr.getKey());
             if (compareFlag == 0) {
                 target = curr;
                 break;
@@ -106,7 +95,7 @@ public class BinaryTree<T extends Comparable<T>> extends Tree<T> {
             }
         }
         if (target == null) {
-            throw new Exception("could not find target :" + node.getKey());
+            throw new Exception("could not find target :" + key);
         }
         return new TargetNodeInfo(target, parent, nodeType);
     }

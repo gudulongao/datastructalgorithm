@@ -15,9 +15,23 @@ public class RedBlackNode<T extends Comparable<T>> extends Node<T> {
     public RedBlackNode(T key, RedBlackNode<T> parent) {
         super(key);
         this.parent = parent;
+        this.colour = ColourType.RED;
+    }
+
+    public RedBlackNode(T key, RedBlackNode<T> parent, ColourType colour) {
+        super(key);
+        this.parent = parent;
+        this.colour = colour;
     }
 
     public RedBlackNode() {
+    }
+
+    @Override
+    public String toString() {
+        return "Node{" +
+                "key=" + getKey() + ",colour=" + getColour().getStrValue() +
+                '}';
     }
 
     /**
