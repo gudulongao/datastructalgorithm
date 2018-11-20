@@ -59,11 +59,11 @@ public abstract class Tree<T extends Comparable<T>> implements ITree {
 
     private void midIterator(Node<T> node) throws Exception {
         if (node.getLeftChild() != null) {
-            preIterator(node.getLeftChild());
+            midIterator(node.getLeftChild());
         }
         System.out.print(node.getKey() + " ");
         if (node.getRigthChild() != null) {
-            preIterator(node.getRigthChild());
+            midIterator(node.getRigthChild());
         }
     }
 
@@ -75,10 +75,10 @@ public abstract class Tree<T extends Comparable<T>> implements ITree {
 
     private void postIterator(Node<T> node) throws Exception {
         if (node.getLeftChild() != null) {
-            preIterator(node.getLeftChild());
+            postIterator(node.getLeftChild());
         }
         if (node.getRigthChild() != null) {
-            preIterator(node.getRigthChild());
+            postIterator(node.getRigthChild());
         }
         System.out.print(node.getKey() + " ");
     }
