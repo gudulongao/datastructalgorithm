@@ -1,4 +1,4 @@
-package demo.tree.bean;
+package demo.tree.itf;
 
 /**
  * 节点类型

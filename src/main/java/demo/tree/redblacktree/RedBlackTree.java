@@ -9,6 +9,7 @@ import demo.tree.bean.Tree;
  * @param <T> 可排序的数据结构
  */
 public class RedBlackTree<T extends Comparable<T>> extends Tree<T> {
+
     @Override
     public void insert(Node<T> newNode) throws Exception {
     }
