@@ -244,4 +244,8 @@ public class BinaryTree<T extends Comparable<T>> extends Tree<T> {
             this.nodeType = nodeType;
         }
     }
+
+    public static void main(String[] args) {
+        
+    }
 }
