@@ -18,17 +18,17 @@ public class RedBlackTree<T extends Comparable<T>> extends Tree<T> {
     /**
      * 左旋
      *
-     * @param node 当前节点
+     * @param currNode 当前节点
      */
-    private void leftRotate(RedBlackNode<T> node) throws Exception {
-        RedBlackNode<T> parent = node.getParent();
-        NodeType nodeType = node.nodeType();
+    private void leftRotate(RedBlackNode<T> currNode) throws Exception {
+        RedBlackNode<T> parent = currNode.getParent();
+        NodeType nodeType = currNode.nodeType();
         //后继节点（当前节点的右子节点）
-        RedBlackNode<T> replaceNode = node.getRigthChild();
+        RedBlackNode<T> replaceNode = currNode.getRigthChild();
         //处理新老节点的子节点关系（新左=老右）
-        node.setRigthChild(replaceNode.getLeftChild());
+        currNode.setRigthChild(replaceNode.getLeftChild());
         if (replaceNode.getLeftChild() != null) {
-            replaceNode.getLeftChild().setParent(node);
+            replaceNode.getLeftChild().setParent(currNode);
         }
         //处理后继节点与父级节点的关系（新父=老父）如果老父为空，则表明原先的基准节点为root，旋转之后后继节点应为root
         replaceNode.setParent(parent);
@@ -42,24 +42,24 @@ public class RedBlackTree<T extends Comparable<T>> extends Tree<T> {
             }
         }
         //处理新老节点的关系（老=新左）
-        replaceNode.setLeftChild(node);
-        node.setParent(replaceNode);
+        replaceNode.setLeftChild(currNode);
+        currNode.setParent(replaceNode);
     }
 
     /**
      * 右旋
      *
-     * @param node 当前节点
+     * @param currNode 当前节点
      */
-    private void rightRotate(RedBlackNode<T> node) throws Exception {
-        RedBlackNode<T> parent = node.getParent();
-        NodeType nodeType = node.nodeType();
+    private void rightRotate(RedBlackNode<T> currNode) throws Exception {
+        RedBlackNode<T> parent = currNode.getParent();
+        NodeType nodeType = currNode.nodeType();
         //后继节点（当前节点的左子节点）
-        RedBlackNode<T> replaceNode = node.getLeftChild();
+        RedBlackNode<T> replaceNode = currNode.getLeftChild();
         //处理新老节点的子节点关系（新右=老左）
-        node.setLeftChild(replaceNode.getRigthChild());
+        currNode.setLeftChild(replaceNode.getRigthChild());
         if (replaceNode.getRigthChild() != null) {
-            replaceNode.getRigthChild().setParent(node);
+            replaceNode.getRigthChild().setParent(currNode);
         }
         //处理新节点与父节点的关系（新父=老父）如果原先基准节点父为空，则表明原先的基准节点为root，旋转后后继节点应为root
         replaceNode.setParent(parent);
@@ -73,8 +73,8 @@ public class RedBlackTree<T extends Comparable<T>> extends Tree<T> {
             }
         }
         //处理新老节点的关系（新右=老）
-        replaceNode.setRigthChild(node);
-        node.setParent(replaceNode);
+        replaceNode.setRigthChild(currNode);
+        currNode.setParent(replaceNode);
     }
 
     @Override
@@ -181,20 +181,20 @@ public class RedBlackTree<T extends Comparable<T>> extends Tree<T> {
         else {
             if (NodeType.LEFT == parentNodeType) {
                 if (NodeType.RIGHT == currNodeType) {
-                    leftRotate(currNode);
+                    leftRotate(parent);
                     parent = currNode;
                 }
                 parent.setColour(ColourType.BLACK);
                 grandPa.setColour(ColourType.RED);
-                rightRotate(parent);
+                rightRotate(grandPa);
             } else {
                 if (NodeType.LEFT == currNodeType) {
-                    rightRotate(currNode);
+                    rightRotate(parent);
                     parent = currNode;
                 }
                 parent.setColour(ColourType.BLACK);
                 grandPa.setColour(ColourType.RED);
-                leftRotate(parent);
+                leftRotate(grandPa);
             }
         }
     }

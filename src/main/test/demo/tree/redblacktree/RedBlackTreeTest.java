@@ -2,6 +2,7 @@ package demo.tree.redblacktree;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
 
 public class RedBlackTreeTest {
     private RedBlackTree<Integer> tree;
@@ -25,5 +26,10 @@ public class RedBlackTreeTest {
         System.out.println();
         tree.levelIterator();
         System.out.println();
+    }
+
+    @Test
+    public void testInsert() throws Exception {
+        tree.insert(100);
     }
 }
