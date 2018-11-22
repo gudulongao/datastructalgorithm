@@ -138,41 +138,62 @@ public class RedBlackTree<T extends Comparable<T>> extends Tree<T> {
      */
     private void insertFix(RedBlackNode<T> newNode) throws Exception {
         NodeType newNodeType = newNode.nodeType();
+        //获取父级节点
         RedBlackNode<T> parent = newNode.getParent();
-        NodeType parentNodeType = parent.nodeType();
-        ColourType parentColour = parent.getColour();
+        if (parent == null) {
+            return;
+        }
+        //获取祖父节点
         RedBlackNode<T> grandPa = parent.getParent();
-        RedBlackNode<T> uncale = getUncaleNode(newNode);
-        //父节点是黑色
+        if (grandPa == null) {
+            return;
+        }
+        //父节点的颜色
+        ColourType parentColour = parent.getColour();
+        //父节点是黑色不做处理
         if (ColourType.BLACK == parentColour) {
-
-        } else {
-            if (uncale == null) {
-                return;
-            }
-            ColourType uncaleColour = uncale.getColour();
-            //父节点是红色，叔叔节点是红色
-            if (ColourType.RED == uncaleColour) {
-                parent.setColour(ColourType.BLACK);
-                uncale.setColour(ColourType.BLACK);
-                insertFix(grandPa);
-            }
-            //父节点是红色，叔叔节点是黑色
-            else {
-                if (NodeType.LEFT == parentNodeType && NodeType.LEFT == newNodeType) {
+            return;
+        }
+        //获取父级节点的节点类型
+        NodeType parentNodeType = parent.nodeType();
+        //获取叔叔节点
+        RedBlackNode<T> uncale = getUncaleNode(newNode);
+        if (uncale == null) {
+            return;
+        }
+        ColourType uncaleColour = uncale.getColour();
+        //父节点是红色，叔叔节点是红色,直接变更父节点与叔叔节点的颜色，修改祖父节点的颜色
+        if (ColourType.RED == uncaleColour) {
+            parent.setColour(ColourType.BLACK);
+            uncale.setColour(ColourType.BLACK);
+            grandPa.setColour(ColourType.RED);
+            //以祖父节点为基准开始修正
+            insertFix(grandPa);
+        }
+        //父节点是红色，叔叔节点是黑色
+        else {
+            if (NodeType.LEFT == parentNodeType) {
+                //当父节点是左子树，新节点也是左子树
+                if (NodeType.LEFT == newNodeType) {
                     rightRotate(parent);
-                } else if (NodeType.RIGHT == parentNodeType && NodeType.RIGHT == newNodeType) {
-                    leftRotate(parent);
-                } else if (NodeType.LEFT == parentNodeType && NodeType.RIGHT == newNodeType) {
+                }
+                //当父节点是左子树，新节点是右子树
+                else {
                     leftRotate(newNode);
                     rightRotate(newNode);
-                } else if (NodeType.RIGHT == parentNodeType && NodeType.LEFT == newNodeType) {
+                }
+            } else {
+                //当父节点是右子树，新节点也是右子树
+                if (NodeType.RIGHT == newNodeType) {
+                    leftRotate(parent);
+                }
+                //当父节点是右子树，新节点是左子树
+                else {
                     rightRotate(newNode);
                     leftRotate(newNode);
                 }
             }
         }
-
     }
 
     @Override
