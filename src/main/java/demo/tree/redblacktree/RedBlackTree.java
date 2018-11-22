@@ -114,18 +114,43 @@ public class RedBlackTree<T extends Comparable<T>> extends Tree<T> {
         return newNode;
     }
 
+    /**
+     * 获取当前节点的叔叔节点
+     *
+     * @param node 当前节点
+     */
+    private RedBlackNode<T> getUncaleNode(RedBlackNode<T> node) {
+        RedBlackNode<T> parent = node.getParent();
+        if (parent == null) {
+            return null;
+        }
+        RedBlackNode<T> grandPa = parent.getParent();
+        if (grandPa == null) {
+            return null;
+        }
+        return NodeType.LEFT == parent.nodeType() ? grandPa.getRigthChild() : grandPa.getLeftChild();
+    }
+
+    /**
+     * 新增后修正
+     *
+     * @param newNode 新节点
+     */
     private void insertFix(RedBlackNode<T> newNode) throws Exception {
         NodeType newNodeType = newNode.nodeType();
         RedBlackNode<T> parent = newNode.getParent();
         NodeType parentNodeType = parent.nodeType();
         ColourType parentColour = parent.getColour();
         RedBlackNode<T> grandPa = parent.getParent();
-        RedBlackNode<T> uncale = NodeType.LEFT == parent.nodeType() ? grandPa.getRigthChild() : grandPa.getLeftChild();
-        ColourType uncaleColour = uncale.getColour();
+        RedBlackNode<T> uncale = getUncaleNode(newNode);
         //父节点是黑色
         if (ColourType.BLACK == parentColour) {
 
         } else {
+            if (uncale == null) {
+                return;
+            }
+            ColourType uncaleColour = uncale.getColour();
             //父节点是红色，叔叔节点是红色
             if (ColourType.RED == uncaleColour) {
                 parent.setColour(ColourType.BLACK);
