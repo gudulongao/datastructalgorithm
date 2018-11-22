@@ -134,12 +134,12 @@ public class RedBlackTree<T extends Comparable<T>> extends Tree<T> {
     /**
      * 新增后修正
      *
-     * @param newNode 新节点
+     * @param currNode 当前节点
      */
-    private void insertFix(RedBlackNode<T> newNode) throws Exception {
-        NodeType newNodeType = newNode.nodeType();
+    private void insertFix(RedBlackNode<T> currNode) throws Exception {
+        NodeType currNodeType = currNode.nodeType();
         //获取父级节点
-        RedBlackNode<T> parent = newNode.getParent();
+        RedBlackNode<T> parent = currNode.getParent();
         if (parent == null) {
             return;
         }
@@ -157,7 +157,7 @@ public class RedBlackTree<T extends Comparable<T>> extends Tree<T> {
         //获取父级节点的节点类型
         NodeType parentNodeType = parent.nodeType();
         //获取叔叔节点
-        RedBlackNode<T> uncale = getUncaleNode(newNode);
+        RedBlackNode<T> uncale = getUncaleNode(currNode);
         if (uncale == null) {
             return;
         }
@@ -173,25 +173,21 @@ public class RedBlackTree<T extends Comparable<T>> extends Tree<T> {
         //父节点是红色，叔叔节点是黑色
         else {
             if (NodeType.LEFT == parentNodeType) {
-                //当父节点是左子树，新节点也是左子树
-                if (NodeType.LEFT == newNodeType) {
-                    rightRotate(parent);
+                if (NodeType.RIGHT == currNodeType) {
+                    leftRotate(currNode);
+                    parent = currNode;
                 }
-                //当父节点是左子树，新节点是右子树
-                else {
-                    leftRotate(newNode);
-                    rightRotate(newNode);
-                }
+                parent.setColour(ColourType.BLACK);
+                grandPa.setColour(ColourType.RED);
+                rightRotate(parent);
             } else {
-                //当父节点是右子树，新节点也是右子树
-                if (NodeType.RIGHT == newNodeType) {
-                    leftRotate(parent);
+                if (NodeType.LEFT == currNodeType) {
+                    rightRotate(currNode);
+                    parent = currNode;
                 }
-                //当父节点是右子树，新节点是左子树
-                else {
-                    rightRotate(newNode);
-                    leftRotate(newNode);
-                }
+                parent.setColour(ColourType.BLACK);
+                grandPa.setColour(ColourType.RED);
+                leftRotate(parent);
             }
         }
     }
