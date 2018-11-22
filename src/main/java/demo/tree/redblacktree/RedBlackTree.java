@@ -30,12 +30,16 @@ public class RedBlackTree<T extends Comparable<T>> extends Tree<T> {
         if (replaceNode.getLeftChild() != null) {
             replaceNode.getLeftChild().setParent(node);
         }
-        //处理后继节点与父级节点的关系（新父=老父）
+        //处理后继节点与父级节点的关系（新父=老父）如果老父为空，则表明原先的基准节点为root，旋转之后后继节点应为root
         replaceNode.setParent(parent);
-        if (NodeType.LEFT == nodeType) {
-            parent.setLeftChild(replaceNode);
+        if (parent == null) {
+            root = replaceNode;
         } else {
-            parent.setRigthChild(replaceNode);
+            if (NodeType.LEFT == nodeType) {
+                parent.setLeftChild(replaceNode);
+            } else {
+                parent.setRigthChild(replaceNode);
+            }
         }
         //处理新老节点的关系（老=新左）
         replaceNode.setLeftChild(node);
@@ -57,12 +61,16 @@ public class RedBlackTree<T extends Comparable<T>> extends Tree<T> {
         if (replaceNode.getRigthChild() != null) {
             replaceNode.getRigthChild().setParent(node);
         }
-        //处理新节点与父节点的关系（新父=老父）
+        //处理新节点与父节点的关系（新父=老父）如果原先基准节点父为空，则表明原先的基准节点为root，旋转后后继节点应为root
         replaceNode.setParent(parent);
-        if (NodeType.LEFT == nodeType) {
-            parent.setLeftChild(replaceNode);
+        if (parent == null) {
+            root = replaceNode;
         } else {
-            parent.setRigthChild(replaceNode);
+            if (NodeType.LEFT == nodeType) {
+                parent.setLeftChild(replaceNode);
+            } else {
+                parent.setRigthChild(replaceNode);
+            }
         }
         //处理新老节点的关系（新右=老）
         replaceNode.setRigthChild(node);
@@ -74,12 +82,13 @@ public class RedBlackTree<T extends Comparable<T>> extends Tree<T> {
         if (newKey == null) {
             throw new IllegalArgumentException();
         }
-        if (root == null) {
+        if (getRoot() == null) {
             root = new RedBlackNode<T>(newKey, null, ColourType.BLACK);
             return;
         }
         RedBlackNode<T> newNode = addNewNode(newKey);
         insertFix(newNode);
+        getRoot().setColour(ColourType.BLACK);
     }
 
     /**
@@ -89,21 +98,22 @@ public class RedBlackTree<T extends Comparable<T>> extends Tree<T> {
      */
     private RedBlackNode<T> addNewNode(T newKey) {
         RedBlackNode<T> newNode = new RedBlackNode<T>(newKey, null, ColourType.RED);
-        RedBlackNode<T> curr = getRoot();
+        RedBlackNode<T> curr = getRoot(), parent = curr;
         int compareFlag;
         NodeType nodeType = null;
         //遍历树，找到可以存储新关键词的位置
         while (curr != null) {
             compareFlag = newKey.compareTo(curr.getKey());
             if (compareFlag < 0) {
+                parent = curr;
                 curr = curr.getLeftChild();
                 nodeType = NodeType.LEFT;
             } else {
+                parent = curr;
                 curr = curr.getRigthChild();
                 nodeType = NodeType.RIGHT;
             }
         }
-        RedBlackNode<T> parent = curr.getParent();
         //将新的节点添加到树中
         newNode.setParent(parent);
         if (NodeType.LEFT == nodeType) {
@@ -158,10 +168,7 @@ public class RedBlackTree<T extends Comparable<T>> extends Tree<T> {
         NodeType parentNodeType = parent.nodeType();
         //获取叔叔节点
         RedBlackNode<T> uncale = getUncaleNode(currNode);
-        if (uncale == null) {
-            return;
-        }
-        ColourType uncaleColour = uncale.getColour();
+        ColourType uncaleColour = uncale == null ? null : uncale.getColour();
         //父节点是红色，叔叔节点是红色,直接变更父节点与叔叔节点的颜色，修改祖父节点的颜色
         if (ColourType.RED == uncaleColour) {
             parent.setColour(ColourType.BLACK);
